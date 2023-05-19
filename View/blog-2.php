@@ -1,0 +1,27 @@
+<!--Page Title-->
+<section class="page-title" style="background-image:url(assets/images/background/5.jpg)">
+	<div class="auto-container">
+		<h2>Tin tức</h2>
+		<ul class="page-breadcrumb">
+			<li><a href="index.php?action=home">home</a></li>
+			<li>Tin tức</li>
+		</ul>
+	</div>
+</section>
+<!--End Page Title-->
+
+<!-- Our Blogs Section -->
+<section class="our-blogs-section">
+	<div class="auto-container">
+		<label class="h3 text-dark" for="newsSearch">Nhập tin tức cần tìm</label>
+		<input class="searchNews form-control col-lg-3 col-md-4 col-sm-5" type="search" name="newsSearch" placeholder="Tìm kiếm tin tức">
+
+		<hr class="sidebar-divider d-md-block">
+
+		<div class="contentNews">
+			<?php include 'include/news.php' ?>
+		</div>
+
+	</div>
+</section>
+<!-- End Our Blogs Section -->
