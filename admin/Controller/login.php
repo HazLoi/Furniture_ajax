@@ -24,7 +24,7 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
 		));
 	} else {
 		echo json_encode(array(
-			'status' => 0,
+			'status' => 2,
 			'message' => 'Tài khoản hoặc mật khẩu không đúng'
 		));
 	}

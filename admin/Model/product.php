@@ -20,7 +20,7 @@ class product
 	public function getProductOnePage($start, $limit)
 	{
 
-		$select = "SELECT * FROM sanpham WHERE trangthai = 1 limit $start , $limit ";
+		$select = "SELECT * FROM sanpham WHERE trangthai = 1 and i_delete = 1 limit $start , $limit ";
 
 		$result = $this->db->getList($select);
 
@@ -56,7 +56,7 @@ class product
 
 	public function getProductForSearch($productSearch, $start , $limit)
 	{
-		$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 limit $start , $limit";
+		$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 and i_delete = 1 limit $start , $limit";
 
 		$result = $this->db->getList($select);
 		return $result;
@@ -64,7 +64,7 @@ class product
 
 	public function getAllProductForSearch($productSearch)
 	{
-		$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1";
+		$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 and i_delete = 1";
 
 		$result = $this->db->getList($select);
 		return $result;
@@ -72,7 +72,7 @@ class product
 
 	public function getProductForCategory($category, $start , $limit)
 	{
-		$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 limit $start , $limit";
+		$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 and a.i_delete = 1 limit $start , $limit";
 
 		$result = $this->db->getList($select);
 		
@@ -81,7 +81,7 @@ class product
 
 	public function getAllProductForCategory($category)
 	{
-		$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1";
+		$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 and a.i_delete = 1";
 
 		$result = $this->db->getList($select);
 		return $result;
@@ -89,7 +89,7 @@ class product
 
 	public function getAllCategory()
 	{
-		$select = "SELECT maLoai, tenloai, count(maSP) as 'tongSP' FROM loai_sanpham a, sanpham b WHERE maLoai = loai and b.trangthai = 1 and a.trangthai = 1 GROUP BY maLoai";
+		$select = "SELECT maLoai, tenloai, count(maSP) as 'tongSP' FROM loai_sanpham a, sanpham b WHERE maLoai = loai and b.trangthai = 1 and a.trangthai = 1 and a.i_delete = 1 GROUP BY maLoai";
 		$result = $this->db->getList($select);
 		return $result;
 	}

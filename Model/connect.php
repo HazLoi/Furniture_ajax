@@ -6,7 +6,7 @@ class connect
     // Hàm tạo PDO(dsn,user,pass,array(...))
     public function __construct()
     {
-        $dsn = 'mysql:host=localhost;dbname=furniture_ajax';
+        $dsn = 'mysql:host=localhost;dbname=furniture';
         $user = 'root';
         $pass = '';
         try {

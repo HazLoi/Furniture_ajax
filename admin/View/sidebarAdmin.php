@@ -107,6 +107,7 @@ $role = $admin->getRoleAdmin($_SESSION['id_admin'])['maQuyen'];
                 <?php if ($role == 1 || $role == 3 || $role == 4) { ?>
                     <a class="collapse-item" href="index.php?action=admin-page&act=addNews">Thêm tin tức</a>
                 <?php } ?>
+                <a class="collapse-item" href="index.php?action=admin-page&act=newsType">Loại tin tức</a>
             </div>
         </div>
     </li>

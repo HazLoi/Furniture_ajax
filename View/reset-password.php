@@ -20,7 +20,7 @@
     			<form class="col-lg-6 col-md-6 col-sm-12 m-auto" action="index.php?action=reset-password&act=reset" method="post">
     				<div class="form-group">
     					<label for="email">Email</label>
-    					<input class="form-control" type="text" name="email" autocomplete="off" spellcheck="false" placeholder="furniture@gmail.com">
+    					<input class="form-control" type="text" name="email" autocomplete="off" spellcheck="false" placeholder="Nhập email của bạn">
     				</div>
     				<div>
     					<button class="btn btn-info">
@@ -38,7 +38,7 @@
     			<form class="col-lg-6 col-md-6 col-sm-12 m-auto" action="index.php?action=reset-password&act=submit" method="post">
     				<div class="form-group">
     					<label for="code">Mã xác nhận</label>
-    					<input class="form-control" type="text" name="code" autocomplete="off" spellcheck="false" placeholder="**********">
+    					<input class="form-control" type="text" name="code" autocomplete="off" spellcheck="false" placeholder="Nhập mã xác nhận">
     				</div>
     				<div>
     					<button class="btn btn-info">

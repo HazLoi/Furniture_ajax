@@ -22,7 +22,7 @@ if (isset($_POST['email']) && $_POST['email'] != 'all') {
 }
 
 ?>
-<table class="table table-borderless">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>##</th>

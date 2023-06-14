@@ -50,10 +50,10 @@
                 </div>
                 <form class="user" id="formLoginAdmin">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Tên đăng nhập" value="admin@gmail.com">
+                        <input type="text" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Tên đăng nhập">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control form-control-user" name="password" placeholder="Mật khẩu" value="123456">
+                        <input type="password" class="form-control form-control-user" name="password" placeholder="Mật khẩu">
                     </div>
                     <button class="btn btn-primary btn-user btn-block">
                         Đăng nhập

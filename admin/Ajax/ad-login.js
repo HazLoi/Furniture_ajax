@@ -43,12 +43,16 @@ $(document).ready(function () {
 					setTimeout(function () {
 						window.location = '/admin/';
 					}, 1000);
-				} else { // false								
+				} else if (response.status == 2){ // false								
+					Toast.fire({
+						icon: 'warning',
+						title: response.message
+					});
+				} else{
 					Toast.fire({
 						icon: 'error',
 						title: response.message
 					});
-					alert(JSON.parse(response).message);
 				}
 			}
 		})

@@ -8,6 +8,52 @@ class admin
 		$this->db = new connect();
 	}
 
+	public function editNewsType($newsTypeId, $newsTypeName)
+	{
+		$insert = "UPDATE loai_tintuc SET tenloai = '$newsTypeName' WHERE maLoai = $newsTypeId";
+
+		$result = $this->db->exec($insert);
+
+		return $result;
+	}
+
+
+	public function addNewsType($newsTypeName)
+	{
+		$insert = "INSERT INTO loai_tintuc (tenloai) VALUES ('$newsTypeName')";
+
+		$result = $this->db->exec($insert);
+
+		return $result;
+	}
+
+	public function getNewsByNameType($nameType)
+	{
+		$select = "SELECT a.*, b.tenloai FROM tin_tuc a, loai_tintuc b WHERE loai = maLoai and b.tenloai = '$nameType' and a.i_delete = 1 ORDER BY a.maTT DESC";
+
+		$result = $this->db->getList($select);
+
+		return $result;
+	}
+
+	public function getAllNewsType()
+	{
+		$select = "SELECT * FROM loai_tintuc WHERE i_delete = 1";
+
+		$result = $this->db->getList($select);
+
+		return $result;
+	}
+
+	public function checkNewsType($newsType)
+	{
+		$select = "SELECT tenloai FROM loai_tintuc WHERE maLoai = $newsType";
+
+		$result = $this->db->getInstance($select);
+
+		return $result;
+	}
+
 	public function changePassword($idAdmin, $password, $passwordNew)
 	{
 		$date = new DateTime('now');
@@ -644,7 +690,7 @@ class admin
 
 	public function getAllNews()
 	{
-		$select = "SELECT * FROM tin_tuc WHERE i_delete = 1  ORDER BY maTT DESC";
+		$select = "SELECT * FROM tin_tuc WHERE i_delete = 1 ORDER BY maTT DESC";
 		$result = $this->db->getList($select);
 		return $result;
 	}
@@ -677,12 +723,12 @@ class admin
 		return $result;
 	}
 
-	public function editNews($newsId, $title, $date, $imageName, $content, $detail)
+	public function editNews($newsId, $title, $date, $imageName, $content, $detail, $newsType)
 	{
 		$dateNow = new DateTime('now');
 		$dateFix = $dateNow->format('Y-m-d');
 
-		$update = "UPDATE tin_tuc SET tenTT = '$title',anh = '$imageName', ngay = '$date', noidung = '$content', chitiet = '$detail', ngaycapnhat = '$dateFix', tinhtrang = 2 WHERE maTT = $newsId";
+		$update = "UPDATE tin_tuc SET tenTT = '$title',anh = '$imageName', ngay = '$date', noidung = '$content', chitiet = '$detail', ngaycapnhat = '$dateFix', tinhtrang = 2, loai = $newsType WHERE maTT = $newsId";
 
 		$result = $this->db->exec($update);
 
@@ -705,12 +751,12 @@ class admin
 		return $result;
 	}
 
-	public function editNewsNoImage($newsId, $title, $date, $content, $detail)
+	public function editNewsNoImage($newsId, $title, $date, $content, $detail, $newsType)
 	{
 		$dateNow = new DateTime('now');
 		$dateFix = $dateNow->format('Y-m-d');
 
-		$update = "UPDATE tin_tuc SET tentT = '$title', ngay = '$date', noidung = '$content', chitiet = '$detail', ngaycapnhat = '$dateFix', tinhtrang = 2 WHERE maTT = $newsId";
+		$update = "UPDATE tin_tuc SET tentT = '$title', ngay = '$date', noidung = '$content', chitiet = '$detail', ngaycapnhat = '$dateFix', tinhtrang = 2, loai = $newsType WHERE maTT = $newsId";
 
 		$result = $this->db->exec($update);
 
@@ -733,11 +779,11 @@ class admin
 		return $result;
 	}
 
-	public function addNews($title, $date, $image, $content)
+	public function addNews($title, $date, $image, $contentShort, $contentLong, $newsType)
 	{
-		$insert = "INSERT INTO tin_tuc (tenTT, anh, ngay, noidung, tinhtrang)
+		$insert = "INSERT INTO tin_tuc (tenTT, loai, anh, ngay, noidung, chitiet, tinhtrang)
 
-		VALUES ('$title', '$image', '$date', '$content', 2)";
+		VALUES ('$title',$newsType, '$image', '$date', '$contentShort','$contentLong', 2)";
 
 		$result = $this->db->exec($insert);
 
@@ -791,8 +837,12 @@ class admin
 	public function dropNews($newsId)
 	{
 		$delete = "UPDATE tin_tuc SET i_delete = 0 WHERE maTT = $newsId";
-
 		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$deletee = "UPDATE tin_tuc SET tinhtrang = 2 WHERE maTT = $newsId";
+			$this->db->exec($deletee);
+		}
 
 		// lưu vào thông báo
 
@@ -839,6 +889,95 @@ class admin
 		$idNewNotify = $this->db->getInstance($selectIdNewNotify)['maTB'];
 
 		$updateNotify = "UPDATE thongbao SET caulenh = \"$delete\" WHERE maTB = $idNewNotify";
+
+		$this->db->exec($updateNotify);
+		//
+
+		return $result;
+	}
+
+	public function deleteNewsType($newsTypeId)
+	{
+		$delete = "UPDATE loai_tintuc SET trangthai = 0 WHERE maLoai = $newsTypeId";
+		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$delete1 = "UPDATE tin_tuc SET tinhtrang = 2 WHERE loai = $newsTypeId";
+			$this->db->exec($delete1);
+		}
+
+		// lưu vào thông báo
+		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+		$dateFix = $date->format('Y-m-d H:i:s');
+
+		$insertNotify = "INSERT INTO thongbao (id, tacgia, noidung, ngay, anh, ketqua, timkiem) VALUES ('{$_SESSION['id_admin']}', '{$_SESSION['fullname_admin']}','Ẩn loại tin tức','$dateFix', '{$_SESSION['image_admin']}', '$result', 'Mã loại tin tức: $newsTypeId')";
+
+		$this->db->exec($insertNotify);
+
+		$selectIdNewNotify = "SELECT maTB FROM thongbao ORDER BY maTB DESC limit 1";
+		$idNewNotify = $this->db->getInstance($selectIdNewNotify)['maTB'];
+
+		$updateNotify = "UPDATE thongbao SET caulenh = \"$delete\" WHERE maTB = $idNewNotify";
+
+		$this->db->exec($updateNotify);
+		//
+
+		return $result;
+	}
+
+	public function dropNewsType($newsTypeId)
+	{
+		$delete = "UPDATE loai_tintuc SET i_delete = 0 WHERE maLoai = $newsTypeId";
+		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$deletee = "UPDATE tin_tuc SET tinhtrang = 2, loai = '' WHERE loai = $newsTypeId";
+			$this->db->exec($deletee);
+		}
+
+		// lưu vào thông báo
+
+		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+		$dateFix = $date->format('Y-m-d H:i:s');
+
+		$insertNotify = "INSERT INTO thongbao (id, tacgia, noidung, ngay, anh, ketqua, timkiem) VALUES ('{$_SESSION['id_admin']}', '{$_SESSION['fullname_admin']}','Xóa vĩnh viễn loại tin tức','$dateFix', '{$_SESSION['image_admin']}', '$result', 'Mã loại tin tức: $newsTypeId')";
+
+		$this->db->exec($insertNotify);
+
+		$selectIdNewNotify = "SELECT maTB FROM thongbao ORDER BY maTB DESC limit 1";
+		$idNewNotify = $this->db->getInstance($selectIdNewNotify)['maTB'];
+
+		$updateNotify = "UPDATE thongbao SET caulenh = \"$delete\" WHERE maTB = $idNewNotify";
+
+		$this->db->exec($updateNotify);
+		//
+
+		return $result;
+	}
+
+	public function restoreNewsType($newsTypeId)
+	{
+		$restore = "UPDATE loai_tintuc SET trangthai = 1 WHERE maLoai = $newsTypeId";
+		$result = $this->db->exec($restore);
+
+		if ($result) {
+			$restore1 = "UPDATE tin_tuc SET tinhtrang = 1 WHERE loai = $newsTypeId";
+			$this->db->exec($restore1);
+		}
+
+		// lưu vào thông báo
+
+		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+		$dateFix = $date->format('Y-m-d H:i:s');
+
+		$insertNotify = "INSERT INTO thongbao (id, tacgia, noidung, ngay, anh, ketqua, timkiem) VALUES ('{$_SESSION['id_admin']}', '{$_SESSION['fullname_admin']}','Khôi phục loại tin tức','$dateFix', '{$_SESSION['image_admin']}', '$result', 'Ẩn loại tin tức: $newsTypeId')";
+
+		$this->db->exec($insertNotify);
+
+		$selectIdNewNotify = "SELECT maTB FROM thongbao ORDER BY maTB DESC limit 1";
+		$idNewNotify = $this->db->getInstance($selectIdNewNotify)['maTB'];
+
+		$updateNotify = "UPDATE thongbao SET caulenh = \"$restore\" WHERE maTB = $idNewNotify";
 
 		$this->db->exec($updateNotify);
 		//
@@ -1308,8 +1447,8 @@ class admin
 	public function addCategory($categoryName)
 	{
 		$insert = "INSERT INTO loai_sanpham (tenloai) VALUES ('$categoryName')";
-
 		$result = $this->db->exec($insert);
+
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -1443,6 +1582,8 @@ class admin
 			//
 
 			if ($result) {
+				$deletee = "UPDATE loai_sanpham SET trangthai = 0 WHERE maLoai = $categoryId";
+				$this->db->exec($deletee);
 				//trả về
 				echo json_encode(array(
 					'status' => 1,
@@ -1544,8 +1685,12 @@ class admin
 	public function dropCommentProduct($productId, $idComment)
 	{
 		$select = "UPDATE binh_luan SET i_delete = 0 WHERE maSP = $productId AND maBL = $idComment";
-
 		$result = $this->db->exec($select);
+
+		if ($result) {
+			$deletee = "UPDATE binh_luan SET trangthai = 0 WHERE maSP = $productId AND maBL = $idComment";
+			$this->db->exec($deletee);
+		}
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -1712,8 +1857,8 @@ class admin
 	public function dropContact($contactId)
 	{
 		$delete = "UPDATE lienhe SET i_delete = 0 WHERE maLH = $contactId";
-
 		$result = $this->db->exec($delete);
+
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -1986,11 +2131,12 @@ class admin
 	public function dropAdmin($idAdmin)
 	{
 		$delete = "UPDATE admin SET i_delete = 0 WHERE id = $idAdmin";
-
-		$select = "SELECT * FROM admin WHERE id = $idAdmin";
-		$a = $this->db->getInstance($select);
-
 		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$delete = "UPDATE admin SET trangthai = 0 WHERE id = $idAdmin";
+			$this->db->exec($delete);
+		}
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -2019,11 +2165,13 @@ class admin
 	public function dropCustomer($idCustomer)
 	{
 		$delete = "UPDATE nguoi_dung SET i_delete = 0 WHERE id = $idCustomer";
-
-		$select = "SELECT * FROM nguoi_dung WHERE id = $idCustomer";
-		$a = $this->db->getInstance($select);
-
 		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$delete = "UPDATE nguoi_dung SET trangthai = 0 WHERE id = $idCustomer";
+			$this->db->exec($delete);
+		}
+
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -2051,8 +2199,12 @@ class admin
 	public function dropProduct($idProduct)
 	{
 		$delete = "UPDATE sanpham SET i_delete = 0 WHERE maSP = $idProduct";
-
 		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$delete = "UPDATE sanpham SET trangthai = 0 WHERE maSP = $idProduct";
+			$this->db->exec($delete);
+		}
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
@@ -2079,8 +2231,12 @@ class admin
 	public function dropInvoice($idInvoice)
 	{
 		$delete = "UPDATE hoa_don SET i_delete = 0 WHERE maHD = $idInvoice";
-
 		$result = $this->db->exec($delete);
+
+		if ($result) {
+			$delete = "UPDATE hoa_don SET trangthai = 0 WHERE maHD = $idInvoice";
+			$this->db->exec($delete);
+		}
 
 		// lưu vào thông báo
 		$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));

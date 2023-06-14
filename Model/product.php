@@ -8,6 +8,15 @@ class product
 		$this->db = new connect();
 	}
 
+	public function getAllHomeSlide()
+	{
+		$select = "SELECT * FROM homeslide";
+		
+		$result = $this->db->getList($select);
+
+		return $result;
+	}
+
 	public function checkWishList($idCustomer, $idProduct){
 		$select = "SELECT * FROM yeu_thich WHERE maSP = $idProduct and id = $idCustomer";
 
@@ -122,11 +131,11 @@ class product
 	public function getProductOnePage($start, $limit)
 	{
 		if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'az') {
-			$select = "SELECT * FROM sanpham WHERE trangthai = 1 ORDER BY dongia limit $start , $limit ";
+			$select = "SELECT * FROM sanpham WHERE trangthai = 1 and i_delete = 1 ORDER BY dongia limit $start , $limit ";
 		} else if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'za') {
-			$select = "SELECT * FROM sanpham WHERE trangthai = 1 ORDER BY dongia DESC limit $start , $limit ";
+			$select = "SELECT * FROM sanpham WHERE trangthai = 1 and i_delete = 1 ORDER BY dongia DESC limit $start , $limit ";
 		} else {
-			$select = "SELECT * FROM sanpham WHERE trangthai = 1 limit $start , $limit ";
+			$select = "SELECT * FROM sanpham WHERE trangthai = 1 and i_delete = 1 ORDER BY ngaythem DESC limit $start , $limit ";
 		}
 
 		$result = $this->db->getList($select);
@@ -137,11 +146,11 @@ class product
 	public function getProductForSearch($productSearch, $start, $limit)
 	{
 		if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'az') {
-			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 ORDER BY dongia limit $start , $limit";
+			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 and i_delete = 1 ORDER BY dongia limit $start , $limit";
 		} else if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'za') {
-			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 ORDER BY dongia DESC limit $start , $limit";
+			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 and i_delete = 1 ORDER BY dongia DESC limit $start , $limit";
 		} else {
-			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 limit $start , $limit";
+			$select = "SELECT * FROM sanpham WHERE ten like '%$productSearch%' and trangthai = 1 and i_delete = 1 ORDER BY ngaythem DESC limit $start , $limit";
 		}
 
 		$result = $this->db->getList($select);
@@ -150,11 +159,11 @@ class product
 	public function getProductForCategory($category, $start, $limit)
 	{
 		if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'az') {
-			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 ORDER BY dongia limit $start , $limit";
+			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 and a.i_delete = 1 ORDER BY dongia limit $start , $limit";
 		} else if (isset($_POST['sortProductByPrice']) && $_POST['sortProductByPrice'] == 'za') {
-			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 ORDER BY dongia DESC limit $start , $limit";
+			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 and a.i_delete = 1 ORDER BY dongia DESC limit $start , $limit";
 		} else {
-			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 limit $start , $limit";
+			$select = "SELECT * FROM sanpham as a, loai_sanpham as b WHERE loai = maLoai and tenloai = '$category'  and a.trangthai = 1 and a.i_delete = 1 ORDER BY ngaythem DESC limit $start , $limit";
 		}
 
 		$result = $this->db->getList($select);

@@ -17,13 +17,17 @@ if (isset($_POST['type']) && $_POST['type'] != 'all') {
 	$ac = 2;
 } else if (isset($_POST['search']) && $_POST['search'] != '') {
 	$ac = 3;
+} else if (isset($_POST['nameType']) && $_POST['nameType'] != '') {
+	$ac = 4;
+} else if (isset($_GET['nameType']) && $_GET['nameType'] != '') {
+	$ac = 5;
 } else {
 	$ac = 0;
 }
 
 ?>
 
-<table class="table table-borderless">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>##</th>
@@ -31,6 +35,7 @@ if (isset($_POST['type']) && $_POST['type'] != 'all') {
 			<th>Ảnh</th>
 			<th>Ngày</th>
 			<th>Nội dung</th>
+			<th>Loại</th>
 			<th>Chi tiết</th>
 			<th></th>
 		</tr>
@@ -51,6 +56,12 @@ if (isset($_POST['type']) && $_POST['type'] != 'all') {
 			case 3:
 				$newsList = $admin->getNewsBySearch($_POST['search']);
 				break;
+			case 4:
+				$newsList = $admin->getNewsByNameType($_POST['nameType']);
+				break;
+			case 5:
+				$newsList = $admin->getNewsByNameType($_GET['nameType']);
+				break;
 		}
 		$i = 1;
 		while ($get = $newsList->fetch()) {
@@ -64,35 +75,63 @@ if (isset($_POST['type']) && $_POST['type'] != 'all') {
 						$dateFix = $date->format('d/m/Y');
 						echo $dateFix;
 						?></td>
-				<td style="width: 40%;"><?php echo $get['noidung'] ?></td>
+				<td style="width: 40%;"><?php
+												$max_length = 200;
+												$truncated_content = (strlen($get['noidung']) > $max_length) ? substr($get['noidung'], 0, $max_length) . "..." : $get['noidung'];
+												echo $truncated_content ?></td>
+				<td><?php
+						$nameType = $admin->checkNewsType($get['loai']);
+						if (is_array($nameType)) {
+							echo $nameType['tenloai'];
+						} else {
+							echo '';
+						} ?></td>
 				<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalViewNews<?php echo $get['maTT'] ?>">Xem</button></td>
 				<td style="font-size: 18px" class="col-lg-1 col-md-2 col-sm-3">
 					<?php if ($role == 1 || $role == 3) {
 						if ($get['tinhtrang'] == 1) {
 					?>
-							<a href="javascript:adminDeleteNews(<?= $get['maTT'] ?>,<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
-																											echo $_POST['type'];
-																										} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
-																											echo $_GET['type'];
-																										} ?>)" class="btn btn-secondary col-lg-12 col-md-12 col-sm-12">Ẩn tin tức</a>
+							<a href="javascript:adminDeleteNews(<?= $get['maTT'] ?>,'<?php if (!empty($_POST['nameType'])) {
+																											echo $_POST['nameType'];
+																										} else if (!empty($_GET['nameType'])) {
+																											echo $_GET['nameType'];
+																										} ?>',<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
+																													echo $_POST['type'];
+																												} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
+																													echo $_GET['type'];
+																												} ?>)" class="btn btn-secondary col-lg-12 col-md-12 col-sm-12">Ẩn tin tức</a>
 						<?php }
 						if ($get['tinhtrang'] == 2) { ?>
-							<a class="btn btn-primary col-lg-12 col-md-12 col-sm-12" href="javascript:adminRestoreNews(<?= $get['maTT'] ?>,<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
-																																													echo $_POST['type'];
-																																												} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
-																																													echo $_GET['type'];
-																																												} ?>)">Khôi phục</a>
+							<a class="btn btn-primary col-lg-12 col-md-12 col-sm-12" href="javascript:adminRestoreNews(
+								<?= $get['maTT'] ?>,
+								'<?php if (!empty($_POST['nameType'])) {
+										echo $_POST['nameType'];
+									} else if (!empty($_GET['nameType'])) {
+										echo $_GET['nameType'];
+									} ?>',
+									<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
+										echo $_POST['type'];
+									} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
+										echo $_GET['type'];
+									} ?>)">Khôi phục</a>
 					<?php }
 					} ?>
 					<?php if ($role == 1 || $role == 3 || $role == 5) { ?>
 						<a href="index.php?action=admin-page&act=editNews&maTT=<?php echo $get['maTT'] ?>" class="btn btn-warning col-lg-12 col-md-12 col-sm-12">Sửa tin tức</a>
 					<?php }
 					if ($role == 1) { ?>
-						<a class="btn btn-danger col-lg-12 col-md-12 col-sm-12" href="javascript:adminDropNews(<?= $get['maTT'] ?>,<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
-																																											echo $_POST['type'];
-																																										} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
-																																											echo $_GET['type'];
-																																										} ?>)">Xóa tin tức</a>
+						<a class="btn btn-danger col-lg-12 col-md-12 col-sm-12" href="javascript:adminDropNews(
+							<?= $get['maTT'] ?>,
+						'<?php if (!empty($_POST['nameType'])) {
+								echo $_POST['nameType'];
+							} else if (!empty($_GET['nameType'])) {
+								echo $_GET['nameType'];
+							} ?>',
+							<?php if (isset($_POST['type']) && $_POST['type'] != 'all') {
+								echo $_POST['type'];
+							} else if (isset($_GET['type']) && $_GET['type'] != 'all') {
+								echo $_GET['type'];
+							} ?>)">Xóa tin tức</a>
 					<?php } ?>
 				</td>
 			</tr>

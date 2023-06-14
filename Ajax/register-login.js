@@ -44,12 +44,16 @@ $(document).ready(function () {
 					setTimeout(function () {
 						window.location = '/index.php?action=myAccount';
 					}, 1000);
+				} else if (response.status == 2) { // true						
+					Toast.fire({
+						icon: 'warning',
+						title: response.message
+					});
 				} else { // false								
 					Toast.fire({
 						icon: 'error',
 						title: response.message
 					});
-					alert(JSON.parse(response).message);
 				}
 			}
 		})

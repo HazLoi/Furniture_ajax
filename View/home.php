@@ -4,49 +4,25 @@
 
 		<!-- Banner Carousel -->
 		<div class="banner-carousel owl-theme owl-carousel">
-
-			<!-- Slide -->
-			<div class="slide">
-				<div class="image-layer" style="background-image:url(assets/images/main-slider/1.jpg)"></div>
-				<div class="auto-container">
-					<div class="content">
-						<h2>Chúng tôi biến ngôi nhà <br> Trong mơ thành hiện thực</h2>
-						<div class="text">Kể từ năm 1989, Chúng tôi đã truyền cảm hứng cho những mảnh ghép trong câu chuyện cuộc đời bạn bằng nhà bếp, tủ quần áo, bộ đồ ngủ, phòng khách và phòng ăn tốt nhất.</div>
-						<div class="btns-box">
-							<a href="index.php?action=shop" class="theme-btn btn-style-one"><span class="txt">Xem thêm</span></a>
+			<?php
+			$product = new product();
+			$a = $product->getAllHomeSlide();
+			while ($homeslide = $a->fetch()) {
+			?>
+				<!-- Slide -->
+				<div class="slide">
+					<div class="image-layer" style="background-image:url(assets/images/main-slider/<?= $homeslide['anh'] ?>)"></div>
+					<div class="auto-container">
+						<div class="content">
+							<h2 class="col-lg-8 col-md-9 col-sm-10"><?= $homeslide['tieude'] ?></h2>
+							<div class="text"><?= $homeslide['noidung'] ?></div>
+							<div class="btns-box">
+								<a href="index.php?action=shop" class="theme-btn btn-style-one"><span class="txt"><?= $homeslide['nutbam'] ?></span></a>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			<!-- Slide -->
-			<div class="slide">
-				<div class="image-layer" style="background-image:url(assets/images/main-slider/2.jpg)"></div>
-				<div class="auto-container">
-					<div class="content">
-						<h2>Thiết kế mang lại lợi ích cho <br> Cá tính của bạn</h2>
-						<div class="text">Kể từ năm 1989, Chúng tôi đã truyền cảm hứng cho những mảnh ghép trong câu chuyện cuộc đời bạn bằng nhà bếp, tủ quần áo, bộ đồ ngủ, phòng khách và phòng ăn tốt nhất.</div>
-						<div class="btns-box">
-							<a href="index.php?action=shop" class="theme-btn btn-style-one"><span class="txt">Xem thêm</span></a>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Slide -->
-			<div class="slide">
-				<div class="image-layer" style="background-image:url(assets/images/main-slider/3.jpg)"></div>
-				<div class="auto-container">
-					<div class="content">
-						<h2>Giải pháp cho <br> Nhà bếp hiện đại</h2>
-						<div class="text">Kể từ năm 1989, Chúng tôi đã truyền cảm hứng cho những mảnh ghép trong câu chuyện cuộc đời bạn bằng nhà bếp, tủ quần áo, bộ đồ ngủ, phòng khách và phòng ăn tốt nhất.</div>
-						<div class="btns-box">
-							<a href="index.php?action=shop" class="theme-btn btn-style-one"><span class="txt">Xem thêm</span></a>
-						</div>
-					</div>
-				</div>
-			</div>
-
+			<?php } ?>
 		</div>
 
 	</div>
@@ -392,7 +368,7 @@
 					<img src="assets/images/resource/yourName.jpg" alt="">
 				</div>
 				<a href="https://www.youtube.com/watch?v=-pHfPJGatgE&list=RDwoAHwpOLmyY&index=2" class="overlay-link lightbox-image">
-				<!-- <a href="https://www.youtube.com/watch?v=SXZXtD60t2g" class="overlay-link lightbox-image"> -->
+					<!-- <a href="https://www.youtube.com/watch?v=SXZXtD60t2g" class="overlay-link lightbox-image"> -->
 					<div class="icon-box">
 						<span class="icon flaticon-play-button"></span>
 						<i class="ripple"></i>
@@ -579,7 +555,7 @@
 			<!-- News Block -->
 			<?php
 			$news = new news();
-			$result = $news->getNewsOnePage(0,3);
+			$result = $news->getNewsOnePage(0, 3);
 			while ($get = $result->fetch()) {
 			?>
 				<div class="news-block col-lg-4 col-md-6 col-sm-12">
@@ -608,7 +584,7 @@
 	<div class="auto-container">
 		<h2>Hãy suy nghĩ nội thất. Nghĩ Furnitica</h2>
 		<div class="text">Nội thất cho tất cả các phong cách và ngân sách, Chọn từ hàng ngàn
-mẫu thiết kế. Trái tim yêu thích của bạn vào danh sách rút gọn.</div>
+			mẫu thiết kế. Trái tim yêu thích của bạn vào danh sách rút gọn.</div>
 		<a href="index.php?action=contact" class="theme-btn btn-style-two"><span class="txt">Liên hệ chúng tôi</span></a>
 	</div>
 </section>

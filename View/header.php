@@ -121,7 +121,7 @@
 		<div class="close-btn"><span class="icon flaticon-cancel"></span></div>
 
 		<nav class="menu-box">
-			<div class="nav-logo"><a href="index.php?action=home"><img src="assets/images/logo.png" alt="" title=""></a></div>
+			<div class="nav-logo"><a href="index.php?action=home"><img src="assets/images/logo-mobie.png" alt="" title=""></a></div>
 			<ul class="navigation clearfix"><!--Keep This Empty / Menu will come through Javascript--></ul>
 			<!--Social Links-->
 			<div class="social-links">

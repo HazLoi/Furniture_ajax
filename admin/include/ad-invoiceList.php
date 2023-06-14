@@ -26,7 +26,7 @@ if (isset($_POST['maTTHD']) && $_POST['maTTHD'] != 'all') {
 }
 ?>
 
-<table class="table table-borderless">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>##</th>

@@ -18,8 +18,28 @@
 
 		<hr class="sidebar-divider d-md-block">
 
-		<div class="contentNews">
-			<?php include 'include/news.php' ?>
+		<div class="row clearfix">
+			<div class="col-lg-9 col-md-9 col-sm-12 contentNews">
+				<?php include 'include/news.php' ?>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-12">
+				<div class="sidebar-widget sidebar-blog-category">
+					<div class="sidebar-title">
+						<h2>Loại tin tức</h2>
+					</div>
+					<ul class="cat-list">
+						<li><a href="javascript:findNewsByNewsType()">Xem tất cả</a></li>
+						<?php
+						$newsType = $news->getAllNewsType();
+						while ($set = $newsType->fetch()) {
+						?>
+							<li>
+								<a href="javascript:findNewsByNewsType(<?= $set['maLoai'] ?>)"><?= $set['tenloai'] ?></a>
+							</li>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
 		</div>
 
 	</div>

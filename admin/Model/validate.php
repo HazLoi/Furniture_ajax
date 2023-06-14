@@ -390,12 +390,16 @@ class validate
 			if (empty($dateSale)) {
 				$_SESSION['dateSaleErrorAdminEditProduct'] = "Ngày hết hạn giảm giá không được để trống";
 			} else {
-				$input = new DateTime($dateSale);
-				$date = new DateTime('now');
+				$input = new DateTime($dateSale, new DateTimeZone('Asia/Ho_Chi_Minh'));
+				$date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+				
+				$a = $input->format('Y');
+				$b = $date->format('Y');
+				$c = $b-$a;
 
 				$diff = $date->diff($input);
 
-				if ($diff->invert === 0 && $diff->days > 60) {
+				if ($diff->invert === 0 && $diff->days > 60 || $c != 0) {
 					$_SESSION['dateSaleErrorAdminEditProduct'] = "Tính từ ngày hiện tại ngày hết hạn giảm giá không quá 2 tháng";
 				} else {
 					$_SESSION['dateSaleErrorAdminEditProduct'] = "";
@@ -448,7 +452,7 @@ class validate
 		}
 	}
 
-	public function adminEditCustomer($fname, $lname, $email, $phoneNumber, $address, $birth)
+	public function adminEditCustomer($fname, $lname, $email, $phone, $address, $birth)
 	{
 		function AEC($data)
 		{
@@ -463,7 +467,7 @@ class validate
 		$email = AEC($email);
 		$address = AEC($address);
 		$birth = AEC($birth);
-		$phoneNumber = AEC($phoneNumber);
+		$phone = AEC($phone);
 		//Tạo để lưu lỗi vào session
 		$_SESSION['fnameErrorAdminEditCustomer'] = "";
 		$_SESSION['lnameErrorAdminEditCustomer'] = "";
@@ -500,11 +504,11 @@ class validate
 			}
 		}
 
-		if (empty($phoneNumber)) {
+		if (empty($phone)) {
 			$_SESSION['phoneErrorAdminEditCustomer'] = "Số điện thoại không được để trống";
 		} else {
 			$phone_pattern = "/^[0]{1}\d{9,10}$/";
-			if (!preg_match($phone_pattern, $phoneNumber)) {
+			if (!preg_match($phone_pattern, $phone)) {
 				$_SESSION['phoneErrorAdminEditCustomer'] = "Số điện thoại không hợp lệ";
 			} else {
 				$_SESSION['phoneErrorAdminEditCustomer'] = "";
@@ -1271,7 +1275,16 @@ class validate
 			if (preg_match($categoryName_pattern, $categoryName)) {
 				$_SESSION['categoryNameErrorAddCategory'] = "Tên loại không được có số ";
 			} else {
-				$_SESSION['categoryNameErrorAddCategory'] = "";
+				$conn = new connect();
+				// Kiểm tra trùng
+				$checkExists = "SELECT tenloai FROM loai_sanpham WHERE tenloai = '$categoryName' and i_delete = 1";
+				$a = $conn->getInstance($checkExists);
+				if ($a) {
+					$_SESSION['categoryNameErrorAddCategory'] = "Tên loại đã tồn tại";
+				} else {
+					$_SESSION['categoryNameErrorAddCategory'] = "";
+				}
+				
 			}
 		}
 
@@ -1279,6 +1292,77 @@ class validate
 			$_SESSION['categoryNameErrorAddCategory'] == ""
 		)
 			return 1;
+	}
+
+	public function checkAddNewsType($newsType)
+	{
+		function addNewsType($data)
+		{
+			$data = trim($data); // bỏ khoảng trống 2 đầu
+			$data = stripslashes($data); // loại bỏ ký tự như dấu ', ", / để  tránh gây lỗi 
+			$data = htmlspecialchars($data); // chuyển ký tự đặc biệt thành thẻ HTML tương ứng để tránh gây gây vấn đề bảo mật web
+			return $data;
+		}
+
+		$newsType = addNewsType($newsType);
+		//Tạo để lưu lỗi vào session
+		$_SESSION['newsTypeErrorAddNewsType'] = "";
+
+		if (empty($newsType)) {
+			$_SESSION['newsTypeErrorAddNewsType'] = "Tên loại không được để trống";
+		} else {
+			$newsType_pattern = "/\d/";
+			if (preg_match($newsType_pattern, $newsType)) {
+				$_SESSION['newsTypeErrorAddNewsType'] = "Tên loại không được có số ";
+			} else {
+				$conn = new connect();
+				$check = "SELECT * FROM loai_tintuc WHERE tenloai = '$newsType'";
+				$a = $conn->getInstance($check);
+				if($a){
+					$_SESSION['newsTypeErrorAddNewsType'] = "$newsType đã tồn tại";
+				}else{
+					$_SESSION['newsTypeErrorAddNewsType'] = "";
+				}
+			}
+		}
+
+		if (
+			$_SESSION['newsTypeErrorAddNewsType'] == ""
+		)
+			return 1;
+	}
+
+	public function checkEditNewsType($newsType)
+	{
+		function ENTN($data)
+		{
+			$data = trim($data); // bỏ khoảng trống 2 đầu
+			$data = stripslashes($data); // loại bỏ ký tự như dấu ', ", / để  tránh gây lỗi 
+			$data = htmlspecialchars($data); // chuyển ký tự đặc biệt thành thẻ HTML tương ứng để tránh gây gây vấn đề bảo mật web
+			return $data;
+		}
+
+		$newsType = ENTN($newsType);
+		//Tạo để lưu lỗi vào session
+		$_SESSION['newsTypeErrorEditNewsType'] = "";
+
+
+		if (empty($newsType)) {
+			$_SESSION['newsTypeErrorEditNewsType'] = "Tên loại không được để trống";
+		} else {
+			$newsType_pattern = "/\d/";
+			if (preg_match($newsType_pattern, $newsType)) {
+				$_SESSION['newsTypeErrorEditNewsType'] = "Tên loại không được có số ";
+			} else {
+				$_SESSION['newsTypeErrorEditNewsType'] = "";
+			}
+		}
+
+		if (
+			$_SESSION['newsTypeErrorEditNewsType'] == ""
+		) {
+			return 1;
+		}
 	}
 
 	public function checkEditCategory($categoryName)
@@ -1485,10 +1569,26 @@ class validate
 		return $result;
 	}
 
+	public function checkExistsNewsTypeName($categoryId, $newsTypeName)
+	{
+		$query = "SELECT tenloai FROM loai_tintuc WHERE maLoai != $categoryId and tenloai = '$newsTypeName'";
+		$result = $this->db->getInstance($query);
+		return $result;
+	}
+
 	public function checkExistsCategory($categoryId)
 	{
 		$query = "SELECT tenloai FROM loai_sanpham WHERE maLoai = $categoryId";
 		$result = $this->db->getInstance($query);
+		return $result;
+	}
+
+	public function checkExistsNewsType($newsType)
+	{
+		$query = "SELECT tenloai FROM loai_tintuc WHERE maLoai = $newsType";
+
+		$result = $this->db->getInstance($query);
+
 		return $result;
 	}
 

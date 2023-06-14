@@ -92,7 +92,7 @@ class comment
 
 	public function getCommentByProductIdOnePage($productId, $start, $limit)
 	{
-		$select = "SELECT * FROM binh_luan WHERE maSP = $productId and i_delete = 1 GROUP BY maBL ORDER BY maBL DESC limit $start, $limit";
+		$select = "SELECT * FROM binh_luan WHERE maSP = $productId and i_delete = 1 ORDER BY maBL DESC limit $start, $limit";
 
 		$result = $this->db->getList($select);
 		return $result;
@@ -100,7 +100,7 @@ class comment
 
 	public function getQtyCommentByProductId($productId)
 	{
-		$select = "SELECT count(*) as 'soluong' FROM binh_luan WHERE maSP = $productId and i_delete = 1";
+		$select = "SELECT count(*) as 'soluong' FROM binh_luan WHERE maSP = $productId and i_delete = 1 and trangthai = 1";
 
 		$result = $this->db->getInstance($select);
 		return $result;

@@ -7,7 +7,7 @@
 		</div>
 		<hr class="sidebar-divider d-md-block">
 		<div class="col-12">
-			<p>Link vào database: <a href="http://localhost/phpmyadmin/index.php?route=/database/structure&db=furniture_ajax" target="_blank">database</a></p>
+			<p>Link vào database: <a href="http://localhost/phpmyadmin/index.php?route=/database/structure&db=furniture" target="_blank">database</a></p>
 		</div>
 		<hr class="sidebar-divider d-md-block">
 		<div class="col-lg-4 col-md-5 col-sm-6">

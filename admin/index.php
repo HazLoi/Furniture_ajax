@@ -49,7 +49,7 @@ if (isset($_GET['export']) && $_GET['export'] != '') {
 		<link href="assets/css/sb-admin-2.min.css" rel="stylesheet">
 		<!-- bootstrap 4 -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-		<script src="https://cdn.tiny.cloud/1/e83adcy8e0z7zkydyh90kgy6ld79wf36zftett1h3argx76l/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+		<script src="https://cdn.tiny.cloud/1/hua105m6e502u4v9yv22xm69hndxltgb4sptvmumkiguh052/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

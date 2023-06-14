@@ -88,12 +88,12 @@
 
     					<!-- Contact Info List -->
     					<ul class="contact-info-list">
-    						<li><strong>Địa chỉ :</strong><br>23 Tăng Bạt Hổ, phường 11, Bình Thạnh, Thành phố Hồ Chí Minh</li>
+    						<li><strong>Địa chỉ :</strong><br>12 Trịnh Đình Thảo, Hòa Thạnh, Tân Phú, TP.HCM</li>
     					</ul>
     					<!-- Contact Info List -->
     					<ul class="contact-info-list">
     						<li><strong>Số điện thoại : </strong><a href="tel:1800-456-7890">0937 1234 5678</a></li>
-    						<li><strong>Email : </strong><a href="mailto:info@stellaorre.com">furnitica@furniture.com</a></li>
+    						<li><strong>Email : </strong><a href="mailto:info@stellaorre.com">furniture.shop@gmail.com</a></li>
     					</ul>
     					<!-- Contact Info List -->
     					<ul class="contact-info-list">

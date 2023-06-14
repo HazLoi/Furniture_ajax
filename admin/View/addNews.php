@@ -24,6 +24,19 @@
 				<span class="text-danger"><?php if (isset($_GET['get']) && $_GET['get'] == "add") echo $_SESSION['imageErrorAdminAddNews']; ?></span>
 			</div>
 
+			<div class="form-group">
+				<label for="date">Loại tin tức</label>
+				<select name="newsType" class="form-control">
+					<?php
+					$admin = new admin();
+					$type = $admin->getAllNewsType();
+					while ($set = $type->fetch()) {
+					?>
+						<option value="<?= $set['maLoai'] ?>"><?= $set['tenloai'] ?></option>
+					<?php } ?>
+				</select>
+			</div>
+
 			<button class="btn btn-primary">Thêm tin tức</button>
 		</div>
 		<div class="col-lg-9 col-md-9 col-sm-12">

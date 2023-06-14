@@ -6,9 +6,19 @@
 		<a href="javascript:adminFilterNewsByTT(1)" class="btn btn-info text-white">Tin tức hiện</a>
 		<a href="javascript:adminFilterNewsByTT(2)" class="btn btn-info text-white">Tin tức ẩn</a>
 	</div>
+	<hr class="sidebar-divider d-none d-md-block">
+	<div class="">
+		<?php
+		$admin = new admin();
+		$news = $admin->getAllNewsType();
+		while ($set = $news->fetch()) { ?>
+			<a href="javascript:adminFilterNewsByNameType('<?= $set['tenloai'] ?>')" class="btn btn-info text-white"><?= $set['tenloai'] ?></a>
+		<?php } ?>
+	</div>
 	<hr class="sidebar-divider d-md-block">
 	Tiêu đề
 	<input name="search" type="text" class="my-3 form-control bg-light border-1 small searchTitleNews" placeholder="Tìm kiếm tiêu đề tin tức" autocomplete="off" spellcheck="false">
+
 	<hr class="sidebar-divider d-none d-md-block">
 	<div class="row mt-3 newsList">
 		<?php include "include/ad-newsList.php" ?>

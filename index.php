@@ -26,8 +26,9 @@ if (isset($_GET['printPDF']) && $_GET['printPDF'] == 'printPDFInvoice') {
 		<!-- Responsive -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<script src="https://cdn.tiny.cloud/1/e83adcy8e0z7zkydyh90kgy6ld79wf36zftett1h3argx76l/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+		<script src="https://cdn.tiny.cloud/1/hua105m6e502u4v9yv22xm69hndxltgb4sptvmumkiguh052/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
 		<script src="assets/js/jquery.js"></script>
 		<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 	</head>
@@ -64,7 +65,6 @@ if (isset($_GET['printPDF']) && $_GET['printPDF'] == 'printPDFInvoice') {
 		<script src="assets/js/scrollbar.js"></script>
 		<script src="assets/js/mixitup.js"></script>
 		<script src="assets/js/script.js"></script>
-		<script src="js/jquery.js"></script>
 		<script>
 			tinymce.init({
 				selector: '#contactMessage', // Chỉ định ID của phần tử textarea

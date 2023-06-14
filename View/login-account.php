@@ -214,12 +214,12 @@ $fb_login_url = $fb_helper->getLoginUrl('https://furniture.vn/index.php?action=l
 
 			<div class="form-group">
 				<label for="email">Email</label>
-				<input class="form-control" type="text" name="email" autocomplete="off" spellcheck="false" placeholder="Nhập email của bạn" value="otakushi01@gmail.com">
+				<input class="form-control" type="text" name="email" autocomplete="off" spellcheck="false" placeholder="Nhập email của bạn">
 			</div>
 
 			<div class="form-group">
 				<label for="passwordAccount">Mật khẩu</label>
-				<input class="form-control" type="password" name="password" id="password" autocomplete="off" spellcheck="false" placeholder="Mật khẩu" value="123456">
+				<input class="form-control" type="password" name="password" id="password" autocomplete="off" spellcheck="false" placeholder="Mật khẩu">
 				<div class="d-flex  justify-content-between">
 					<button class="border-0" style="background: none;" type="button" onclick="showPass()">
 						<span id="showPass">Hiện mật khẩu</span>

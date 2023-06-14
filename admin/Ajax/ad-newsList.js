@@ -1,4 +1,4 @@
-function adminDeleteNews(maTT, type) {
+function adminDeleteNews(maTT, nameType, type) {
 	Swal.fire({
 		title: 'Ẩn tin tức',
 		text: 'Bạn có chắc chắn muốn ẩn tin tức này?',
@@ -15,7 +15,8 @@ function adminDeleteNews(maTT, type) {
 				url: 'Controller/ad-newsList.php?act=deleteNews',
 				data: {
 					maTT,
-					type
+					type,
+					nameType
 				},
 				success: function (response) {
 					response = JSON.parse(response);
@@ -35,7 +36,7 @@ function adminDeleteNews(maTT, type) {
 							icon: 'success',
 							title: response.message
 						});
-						$.get('include/ad-newsList.php', { type }, function (data) {
+						$.get('include/ad-newsList.php', { type, nameType }, function (data) {
 							$('.newsList').html(data);
 						});
 					} else { // false								
@@ -50,7 +51,7 @@ function adminDeleteNews(maTT, type) {
 	})
 };
 
-function adminRestoreNews(maTT, type) {
+function adminRestoreNews(maTT, nameType, type) {
 	Swal.fire({
 		title: 'Khôi phục tin tức',
 		text: 'Bạn có chắc chắn muốn khôi phục tin tức này?',
@@ -67,7 +68,8 @@ function adminRestoreNews(maTT, type) {
 				url: 'Controller/ad-newsList.php?act=restoreNews',
 				data: {
 					maTT,
-					type
+					type,
+					nameType
 				},
 				success: function (response) {
 					response = JSON.parse(response);
@@ -87,7 +89,7 @@ function adminRestoreNews(maTT, type) {
 							icon: 'success',
 							title: response.message
 						});
-						$.get('include/ad-newsList.php', { type }, function (data) {
+						$.get('include/ad-newsList.php', { type, nameType }, function (data) {
 							$('.newsList').html(data);
 						});
 					} else { // false								
@@ -102,7 +104,7 @@ function adminRestoreNews(maTT, type) {
 	})
 };
 
-function adminDropNews(maTT, type) {
+function adminDropNews(maTT, nameType, type) {
 	Swal.fire({
 		title: 'Xóa vĩnh viễn tin tức',
 		text: 'Bạn có chắc chắn muốn xóa tin tức này?',
@@ -119,7 +121,8 @@ function adminDropNews(maTT, type) {
 				url: 'Controller/ad-newsList.php?act=dropNews',
 				data: {
 					maTT,
-					type
+					type,
+					nameType
 				},
 				success: function (response) {
 					response = JSON.parse(response);
@@ -139,7 +142,7 @@ function adminDropNews(maTT, type) {
 							icon: 'success',
 							title: response.message
 						});
-						$.get('include/ad-newsList.php', { type }, function (data) {
+						$.get('include/ad-newsList.php', { type, nameType }, function (data) {
 							$('.newsList').html(data);
 						});
 					} else { // false								
@@ -154,13 +157,167 @@ function adminDropNews(maTT, type) {
 	})
 };
 
+function adminDeleteNewsType(newsType) {
+	Swal.fire({
+		title: 'Ẩn tin tức',
+		text: 'Bạn có chắc chắn muốn ẩn tin tức này?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Chấp nhận',
+		cancelButtonText: 'Hủy'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: 'POST',
+				url: 'Controller/ad-newsList.php?act=deleteNewsType',
+				data: {
+					newsType
+				},
+				success: function (response) {
+					response = JSON.parse(response);
+					const Toast = Swal.mixin({
+						toast: true,
+						position: 'bottom-end',
+						showConfirmButton: false,
+						timer: 3000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.addEventListener('mouseenter', Swal.stopTimer);
+							toast.addEventListener('mouseleave', Swal.resumeTimer);
+						}
+					});
+					if (response.status == 1) { // true						
+						Toast.fire({
+							icon: 'success',
+							title: response.message
+						});
+						$.get('include/newsType.php', { newsType }, function (data) {
+							$('.newsType').html(data);
+						});
+					} else { // false								
+						Toast.fire({
+							icon: 'error',
+							title: response.message
+						});
+					}
+				}
+			});
+		}
+	})
+};
+
+function adminRestoreNewsType(newsType) {
+	Swal.fire({
+		title: 'Khôi phục tin tức',
+		text: 'Bạn có chắc chắn muốn khôi phục tin tức này?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Chấp nhận',
+		cancelButtonText: 'Hủy'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: 'POST',
+				url: 'Controller/ad-newsList.php?act=restoreNewsType',
+				data: {
+					newsType
+				},
+				success: function (response) {
+					response = JSON.parse(response);
+					const Toast = Swal.mixin({
+						toast: true,
+						position: 'bottom-end',
+						showConfirmButton: false,
+						timer: 3000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.addEventListener('mouseenter', Swal.stopTimer);
+							toast.addEventListener('mouseleave', Swal.resumeTimer);
+						}
+					});
+					if (response.status == 1) { // true						
+						Toast.fire({
+							icon: 'success',
+							title: response.message
+						});
+						$.get('include/newsType.php', {newsType }, function (data) {
+							$('.newsType').html(data);
+						});
+					} else { // false								
+						Toast.fire({
+							icon: 'error',
+							title: response.message
+						});
+					}
+				}
+			})
+		}
+	})
+};
+
+function adminDropNewsType(newsType) {
+	Swal.fire({
+		title: 'Xóa vĩnh viễn tin tức',
+		text: 'Bạn có chắc chắn muốn xóa tin tức này?',
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Chấp nhận',
+		cancelButtonText: 'Hủy'
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: 'POST',
+				url: 'Controller/ad-newsList.php?act=dropNewsType',
+				data: {
+					newsType
+				},
+				success: function (response) {
+					response = JSON.parse(response);
+					const Toast = Swal.mixin({
+						toast: true,
+						position: 'bottom-end',
+						showConfirmButton: false,
+						timer: 3000,
+						timerProgressBar: true,
+						didOpen: (toast) => {
+							toast.addEventListener('mouseenter', Swal.stopTimer);
+							toast.addEventListener('mouseleave', Swal.resumeTimer);
+						}
+					});
+					if (response.status == 1) { // true						
+						Toast.fire({
+							icon: 'success',
+							title: response.message
+						});
+						$.get('include/newsType.php', { newsType }, function (data) {
+							$('.newsType').html(data);
+						});
+					} else { // false								
+						Toast.fire({
+							icon: 'error',
+							title: response.message
+						});
+					}
+				}
+			});
+		}
+	})
+};
+
+
 function adminFilterNewsByTT(type) {
 	$('.searchTitleNews').val('');
 	$.ajax({
 		type: 'POST',
 		url: 'include/ad-newsList.php',
 		data: {
-			'type': type
+			type
 		},
 		success: function (response) {
 			$('.newsList').html(response);
@@ -168,13 +325,26 @@ function adminFilterNewsByTT(type) {
 	})
 };
 
+function adminFilterNewsByNameType(nameType) {
+	$('.searchTitleNews').val('');
+	$.ajax({
+		type: 'POST',
+		url: 'include/ad-newsList.php',
+		data: {
+			nameType
+		},
+		success: function (response) {
+			$('.newsList').html(response);
+		}
+	})
+}
 
 $(document).ready(function () {
 	$('.searchTitleNews').on('input', function (event) {
 		$.ajax({
 			type: 'POST',
 			url: 'include/ad-newsList.php',
-			data: {search: $(this).val()},
+			data: { search: $(this).val() },
 			success: function (response) {
 				$('.newsList').html(response);
 			}

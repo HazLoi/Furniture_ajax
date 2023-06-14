@@ -8,7 +8,7 @@ $admin = new admin();
 $role = $admin->getRoleAdmin($_SESSION['id_admin'])['maQuyen'];
 
 $act = "admin-page";
-if (isset($_GET['act'])) {
+if (!empty($_GET['act'])) {
 	$act = $_GET['act'];
 }
 
@@ -16,8 +16,69 @@ switch ($act) {
 	case 'admin-page':
 		include_once "View/admin-page.php";
 		break;
+	case 'newsType':
+		if (!empty($_GET['get'])) {
+			if ($_GET['get'] == 'add') {
+				$validate = new validate();
+				$check = $validate->checkAddNewsType($_POST['newsType']);
+				if (!empty($check)) {
+					$admin = new admin();
+					$admin->addNewsType($_POST['newsType']);
+					echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+				} else {
+					include_once "View/newsType.php";
+				}
+			} else if ($_GET['get'] == 'edit') {
+				if (!empty($_GET['id']) && intval($_GET['id']) != null) {
+					$validate = new validate();
+					$check = $validate->checkExistsNewsType($_GET['id']);
+					if (!empty($check)) {
+						$admin = new admin();
+						$getNewsTypeName = $admin->checkNewsType($_GET['id']);
+						$newsTypeNameBefore = $getNewsTypeName['tenloai'];
+						$newsTypeName = $getNewsTypeName['tenloai'];
+						if (!empty($_POST['newsTypeName'])) {
+							if (!empty($_GET['active']) && $_GET['active'] == 'edit') {
+								$validate = new validate();
+								$check = $validate->checkEditNewsType($_POST['newsTypeName']);
+								if ($check == 1) {
+									if ($newsTypeNameBefore != $_POST['newsTypeName']) {
+										$checkExistsNewsTypeName = $validate->checkExistsNewsTypeName($_GET['id'], $_POST['newsTypeName']);
+										if (empty($checkExistsNewsTypeName)) {
+											$admin = new admin();
+											$admin->editNewsType($_GET['id'], $_POST['newsTypeName']);
+											echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+										} else {
+											$_SESSION['newsTypeErrorEditNewsType'] = 'Tên loại đã tồn tại';
+											include_once "View/newsType.php";
+										}
+									} else {
+										$admin = new admin();
+										$admin->editNewsType($_GET['id'], $_POST['newsTypeName']);
+										echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+									}
+								} else {
+									include_once "View/newsType.php";
+								}
+							}
+						} else {
+							include_once "View/newsType.php";
+						}
+					} else {
+						echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+					}
+				} else {
+					echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+				}
+			} else {
+				echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsType"/>';
+			}
+		} else {
+			include_once "View/newsType.php";
+		}
+		break;
 	case 'productList':
-		if (isset($_GET['get']) && $_GET['get'] == 'export') {
+		if (!empty($_GET['get']) && $_GET['get'] == 'export') {
 			$export = new export();
 			$export->exportDataProducts();
 			// echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=productList"/>';
@@ -27,7 +88,7 @@ switch ($act) {
 		break;
 	case 'addProduct':
 		if ($role == 1 || $role == 3 || $role == 4) {
-			if (isset($_GET['get'])) {
+			if (!empty($_GET['get'])) {
 				if ($_GET['get'] == "add") {
 					if (isset($_POST['productName']) && isset($_POST['category']) && isset($_POST['price']) && isset($_POST['instock']) && isset($_POST['descriptionShort']) && isset($_POST['descriptionLong']) && isset($_FILES['image']['name'])) {
 						$productName = $_POST['productName'];
@@ -65,6 +126,21 @@ switch ($act) {
 								include_once "View/addProduct.php";
 							}
 						}
+					} else {
+						$productName = '';
+						$price = '';
+						$sale = '';
+						$instock = '';
+						$selled = '';
+						$rate = '';
+						$like = '';
+						$descriptionShort = '';
+						$descriptionLong = '';
+						$dateSale = '';
+
+
+						$validate = new validate();
+						$result = $validate->adminAddProduct($productName, '', $price, $sale, $instock, $selled, $rate, $like, $descriptionShort, $descriptionLong, $dateSale);
 					}
 				}
 			}
@@ -75,7 +151,7 @@ switch ($act) {
 		break;
 	case 'editProduct':
 		if ($role == 1 || $role == 3 || $role == 5) {
-			if (isset($_GET['maSP']) && intval($_GET['maSP']) != null) {
+			if (!empty($_GET['maSP']) && intval($_GET['maSP']) != null) {
 				$validate = new validate();
 				$check = $validate->checkExistsProduct($_GET['maSP']);
 				if (!empty($check)) {
@@ -95,9 +171,9 @@ switch ($act) {
 					$dateSale = $result['thoigiangiamgia'];
 					$imageOld = $result['anh'];
 
-					if (isset($_GET['get'])) {
+					if (!empty($_GET['get'])) {
 						if ($_GET['get'] == 'edit') {
-							if (isset($_POST['productName']) && isset($_POST['category']) && isset($_POST['price']) && isset($_POST['sale']) && isset($_POST['instock']) && isset($_POST['selled']) && isset($_POST['rate']) && isset($_POST['like']) && isset($_POST['descriptionShort']) && isset($_POST['descriptionLong']) && isset($_POST['dateSale'])) {
+							if (isset($_POST['productName']) && isset($_POST['price']) && isset($_POST['sale']) && isset($_POST['instock']) && isset($_POST['selled']) && isset($_POST['rate']) && isset($_POST['like']) && isset($_POST['descriptionShort']) && isset($_POST['descriptionLong']) && isset($_POST['dateSale'])) {
 								$productName = $_POST['productName'];
 								$category = $_POST['category'];
 								$price = $_POST['price'];
@@ -147,6 +223,20 @@ switch ($act) {
 										}
 									}
 								}
+							} else {
+								$productName = '';
+								$price = '';
+								$sale = '';
+								$instock = '';
+								$selled = '';
+								$rate = '';
+								$like = '';
+								$descriptionShort = '';
+								$descriptionLong = '';
+								$dateSale = '';
+
+								$validate = new validate();
+								$result = $validate->adminEditProduct($productName, $price, $sale, $instock, $selled, $rate, $like, $descriptionShort, $descriptionLong, $dateSale);
 							}
 						}
 					}
@@ -163,7 +253,7 @@ switch ($act) {
 		break;
 	case 'adminList':
 		if ($role == 1) {
-			if (isset($_GET['get'])) {
+			if (!empty($_GET['get'])) {
 				if ($_GET['get'] == 'export') {
 					$export = new export();
 					$export->exportDataAdmins();
@@ -177,7 +267,7 @@ switch ($act) {
 		break;
 	case 'editAdmin':
 		if ($role == 1) {
-			if (isset($_GET['id']) && intval($_GET['id']) != null) {
+			if (!empty($_GET['id']) && intval($_GET['id']) != null) {
 				$validate = new validate();
 				$check = $validate->checkExistsAdmin($_GET['id']);
 				if (!empty($check)) {
@@ -193,8 +283,8 @@ switch ($act) {
 					$birth = $result['ngaysinh'];
 					$address = $result['diachi'];
 					$userNameBefore = $result['tendn'];
-					if (isset($_GET['get'])) {
-						if (isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['birth']) && isset($_POST['address']) && isset($_POST['userName'])) {
+					if (!empty($_GET['get'])) {
+						if (!empty($_POST['email']) && !empty($_POST['phone']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['birth']) && !empty($_POST['address']) && !empty($_POST['userName'])) {
 							if ($_GET['get'] == 'edit') {
 								$email = $_POST['email'];
 								$phone = $_POST['phone'];
@@ -237,6 +327,17 @@ switch ($act) {
 									}
 								}
 							}
+						} else {
+							$email = '';
+							$phone = '';
+							$fname = '';
+							$lname = '';
+							$birth = '';
+							$address = '';
+							$userName = '';
+
+							$validate = new validate();
+							$check = $validate->adminEditAdmin($fname, $lname, $email, $phone, $birth, $address, $userName, $userNameBefore);
 						}
 					}
 					include_once "View/editAdmin.php";
@@ -252,7 +353,7 @@ switch ($act) {
 		break;
 	case 'customerList':
 		if ($role == 1 || $role == 3) {
-			if (isset($_GET['get'])) {
+			if (!empty($_GET['get'])) {
 				if ($_GET['get'] == 'export') {
 					$export = new export();
 					$export->exportDataCustomers();
@@ -268,7 +369,7 @@ switch ($act) {
 		break;
 	case 'editCustomer':
 		if ($role == 1 || $role == 3) {
-			if (isset($_GET['id']) && intval($_GET['id']) != null) {
+			if (!empty($_GET['id']) && intval($_GET['id']) != null) {
 				$validate = new validate();
 				$check = $validate->checkExistsCustomer($_GET['id']);
 				if (!empty($check)) {
@@ -280,8 +381,9 @@ switch ($act) {
 					$phone = $result['sdt'];
 					$address = $result['diachi'];
 					$birth = $result['ngaysinh'];
-					if (isset($_GET['get'])) {
-						if (isset($_POST['email']) && isset($_POST['phone']) && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['password']) && isset($_POST['address']) && isset($_POST['birth'])) {
+					if (!empty($_GET['get'])) {
+						if (!empty($_POST['email']) && !empty($_POST['phone']) && !empty($_POST['fname']) && !empty($_POST['lname']) && !empty($_POST['address'])) {
+							echo 1;
 							if ($_GET['get'] == 'edit') {
 								$email = $_POST['email'];
 								$phone = $_POST['phone'];
@@ -291,9 +393,8 @@ switch ($act) {
 								$address = $_POST['address'];
 								$birth = $_POST['birth'];
 
+								$validate = new validate();
 								if ($emailBefore == $email) {
-
-									$validate = new validate();
 									$check = $validate->adminEditCustomer($fname, $lname, $email, $phone, $address, $birth);
 									if ($check == 1) {
 										$admin = new admin();
@@ -301,13 +402,14 @@ switch ($act) {
 										echo "<script> alert('Cập nhật tài khoản thành công') </script>";
 										echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=customerList"/>';
 									} else {
+										echo 'abc';
+										die;
 										include_once "View/editCustomer.php";
 									}
 								} else {
 									$admin = new admin();
 									$checkExists = $admin->existsEmailCustomer($email);
 									if (empty($checkExists)) {
-										$validate = new validate();
 										$check = $validate->adminEditCustomer($fname, $lname, $email, $phone, $address, $birth);
 										if ($check == 1) {
 											$admin = new admin();
@@ -315,6 +417,8 @@ switch ($act) {
 											echo "<script> alert('Cập nhật tài khoản thành công') </script>";
 											echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=customerList"/>';
 										} else {
+											echo 'def';
+											die;
 											include_once "View/editCustomer.php";
 										}
 									} else {
@@ -322,7 +426,18 @@ switch ($act) {
 									}
 								}
 							}
+						} else {
+							$email = '';
+							$phone = '';
+							$fname = '';
+							$lname = '';
+							$password = '';
+							$address = '';
+							$birth = '';
+							$check = $validate->adminEditCustomer($fname, $lname, $email, $phone, $address, $birth);
 						}
+					} else {
+						include_once "View/editCustomer.php";
 					}
 					include_once "View/editCustomer.php";
 				} else {
@@ -337,8 +452,10 @@ switch ($act) {
 		break;
 	case 'addCustomer':
 		if ($role == 1 || $role == 3) {
-			if (isset($_GET['get']) && $_GET['get'] == 'add') {
-				if (isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['email']) && isset($_POST['password'])) {
+			if (!empty($_GET['get']) && $_GET['get'] == 'add') {
+
+
+				if (!empty($_POST['firstName']) && !empty($_POST['lastName']) && !empty($_POST['email']) && !empty($_POST['password'])) {
 					$admin = new admin();
 					$validate = new validate();
 					$checkAddCustomer = $validate->checkAddCustomer($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['password']);
@@ -357,6 +474,14 @@ switch ($act) {
 							echo "<script> alert('Thêm tài khoản thất bại') </script>";
 						}
 					}
+				} else {
+					$firstName = '';
+					$lastName = '';
+					$email = '';
+					$password = '';
+
+					$validate = new validate();
+					$checkAddCustomer = $validate->checkAddCustomer($firstName, $lastName, $email, $password);
 				}
 				include "View/addCustomer.php";
 			} else {
@@ -368,8 +493,8 @@ switch ($act) {
 		break;
 	case 'addAdmin':
 		if ($role == 1) {
-			if (isset($_GET['get']) && $_GET['get'] == 'add') {
-				if (isset($_POST['firstName']) && isset($_POST['lastName']) && isset($_POST['email']) && isset($_POST['password'])  && isset($_POST['phone'])) {
+			if (!empty($_GET['get']) && $_GET['get'] == 'add') {
+				if (!empty($_POST['firstName']) && !empty($_POST['lastName']) && !empty($_POST['email']) && !empty($_POST['password'])  && !empty($_POST['phone'])) {
 					$admin = new admin();
 					$validate = new validate();
 					$checkAddAdmin = $validate->checkAddAdmin($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['password'], $_POST['phone'], $_POST['userName']);
@@ -398,8 +523,7 @@ switch ($act) {
 		}
 		break;
 	case 'categories':
-		if (isset($_GET['get'])) {
-
+		if (!empty($_GET['get'])) {
 			if ($_GET['get'] == 'add') {
 				$validate = new validate();
 				$check = $validate->checkAddCategory($_POST['categoryName']);
@@ -411,14 +535,14 @@ switch ($act) {
 					include_once "View/categories.php";
 				}
 			} else if ($_GET['get'] == 'edit') {
-				if (isset($_GET['id']) && intval($_GET['id']) != null) {
+				if (!empty($_GET['id']) && intval($_GET['id']) != null) {
 					$validate = new validate();
 					$check = $validate->checkExistsCategory($_GET['id']);
 					if (!empty($check)) {
 						$admin = new admin();
 						$getCategoryName = $admin->getCategoryById($_GET['id']);
 						$categoryName = $getCategoryName['tenloai'];
-						if (isset($_GET['active']) && $_GET['active'] == 'edit') {
+						if (!empty($_GET['active']) && $_GET['active'] == 'edit') {
 							$validate = new validate();
 							$check = $validate->checkEditCategory($_POST['categoryName']);
 							if ($check == 1) {
@@ -448,11 +572,9 @@ switch ($act) {
 		} else {
 			include_once "View/categories.php";
 		}
-
-
 		break;
 	case 'invoiceList':
-		if (isset($_GET['get'])) {
+		if (!empty($_GET['get'])) {
 			if ($_GET['get'] == 'export') {
 				if ($role == 1 || $role == 3) {
 					$export = new export();
@@ -473,7 +595,7 @@ switch ($act) {
 		}
 		break;
 	case 'newsList':
-		if (isset($_GET['get'])) {
+		if (!empty($_GET['get'])) {
 			if ($_GET['get'] == 'export') {
 				if ($role == 1 || $role == 3 || $role == 4) {
 					$export = new export();
@@ -486,15 +608,16 @@ switch ($act) {
 		break;
 	case 'addNews':
 		if ($role == 1 || $role == 3 || $role == 4) {
-			if (isset($_GET['get']) && $_GET['get'] == 'add') {
-				if (isset($_POST['title']) && isset($_POST['date']) && isset($_FILES['image']['name']) && isset($_POST['contentShort']) && isset($_POST['contentLong'])) {
+			if (!empty($_GET['get']) && $_GET['get'] == 'add') {
+				if (!empty($_POST['title']) && !empty($_POST['date']) && !empty($_FILES['image']['name']) && !empty($_POST['contentShort']) && !empty($_POST['contentLong'])) {
 					$title = $_POST['title'];
 					$date = $_POST['date'];
 					$image = $_FILES['image']['name'];
 					$contentShort = $_POST['contentShort'];
 					$contentLong = $_POST['contentLong'];
+					$newsType = $_POST['newsType'];
 
-					$validate = new validate($title, $date, $image, $contentShort, $contentLong);
+					$validate = new validate();
 					$result = $validate->checkAddNews($title, $date, $image, $contentShort, $contentLong);
 					if ($result == 1) {
 						$nameImage = preg_replace("/[^A-Za-z0-9]/", "", $title);
@@ -502,7 +625,7 @@ switch ($act) {
 						$imageName = $nameImage . "." . $imageExtension;
 
 						$admin = new admin();
-						$admin->addNews($title, $date, $imageName, $contentShort, $contentLong);
+						$admin->addNews($title, $date, $imageName, $contentShort, $contentLong, $newsType);
 
 						$saveImage = new addImage();
 						$saveImage->saveImageNews($_FILES['image'], $title);
@@ -510,6 +633,15 @@ switch ($act) {
 						echo "<script> alert('Thêm tin tức thành công') </script>";
 						echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsList"/>';
 					}
+				} else {
+					$title = '';
+					$date = '';
+					$image = '';
+					$contentShort = '';
+					$contentLong = '';
+
+					$validate = new validate();
+					$result = $validate->checkAddNews($title, $date, $image, $contentShort, $contentLong);
 				}
 			}
 			include_once "View/addNews.php";
@@ -519,7 +651,7 @@ switch ($act) {
 		break;
 	case 'editNews':
 		if ($role == 1 || $role == 3 || $role == 5) {
-			if (isset($_GET['maTT']) && intval($_GET['maTT']) != null) {
+			if (!empty($_GET['maTT']) && intval($_GET['maTT']) != null) {
 				$validate = new validate();
 				$check = $validate->checkExistsNews($_GET['maTT']);
 				if (!empty($check)) {
@@ -530,14 +662,16 @@ switch ($act) {
 					$content = $result['noidung'];
 					$detail = $result['chitiet'];
 					$date = $result['ngay'];
+					$newsType = $result['loai'];
 
-					if (isset($_GET['get'])) {
-						if (isset($_POST['title']) && isset($_POST['content']) && isset($_POST['detail']) && isset($_POST['date'])) {
+					if (!empty($_GET['get'])) {
+						if (!empty($_POST['title']) && !empty($_POST['content']) && !empty($_POST['detail']) && !empty($_POST['date'])) {
 							if ($_GET['get'] == 'edit') {
 								$title = $_POST['title'];
 								$content = $_POST['content'];
 								$detail = $_POST['detail'];
 								$date = $_POST['date'];
+								$newsType = $_POST['newsType'];
 
 								$validate = new validate();
 								$check = $validate->checkEditNews($title, $date, $content, $detail);
@@ -554,14 +688,14 @@ switch ($act) {
 										$saveImageName = $code . "." . $imageExtension;
 
 										$admin = new admin();
-										$admin->editNews($_GET['maTT'], $title, $date, $saveImageName, $content, $detail);
+										$admin->editNews($_GET['maTT'], $title, $date, $saveImageName, $content, $detail, $newsType);
 
 										$saveImage = new addImage();
 										$saveImage->saveImageNews($_FILES['image'], $code);
 										// echo "<script> alert('Cập nhật tin tức thành công') </script>";
 										echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsList"/>';
 									} else {
-										$admin->editNewsNoImage($_GET['maTT'], $title, $date, $content, $detail);
+										$admin->editNewsNoImage($_GET['maTT'], $title, $date, $content, $detail, $newsType);
 										// echo "<script> alert('Cập nhật tin tức thành công') </script>";
 										echo '<meta http-equiv="refresh" content="0; url=./index.php?action=admin-page&act=newsList"/>';
 									}
@@ -569,6 +703,14 @@ switch ($act) {
 									include_once "View/editNews.php";
 								}
 							}
+						} else {
+							$title = '';
+							$content = '';
+							$detail = '';
+							$date = '';
+
+							$validate = new validate();
+							$check = $validate->checkEditNews($title, $date, $content, $detail);
 						}
 					}
 					include_once "View/editNews.php";
@@ -583,7 +725,7 @@ switch ($act) {
 		}
 		break;
 	case 'commentList':
-		if (isset($_GET['maSP']) && intval($_GET['maSP']) != null) {
+		if (!empty($_GET['maSP']) && intval($_GET['maSP']) != null) {
 			include_once "View/commentList.php";
 		} else {
 			echo "<script> alert('Sản phẩm không tồn tại') </script>";
@@ -598,7 +740,7 @@ switch ($act) {
 		}
 		break;
 	case 'contactList':
-		if (isset($_GET['get'])) {
+		if (!empty($_GET['get'])) {
 			if ($_GET['get'] == 'export') {
 				$export = new export();
 				$export->exportDataContacts();
@@ -610,7 +752,7 @@ switch ($act) {
 		break;
 	case 'repContact':
 		if ($role != 2) {
-			if (isset($_GET['maLH']) && intval($_GET['maLH']) != '') {
+			if (!empty($_GET['maLH']) && intval($_GET['maLH']) != '') {
 				$admin = new admin();
 				$info = $admin->getInfoContact($_GET['maLH']);
 				$author = $info['tacgia'];

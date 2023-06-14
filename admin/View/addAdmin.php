@@ -61,7 +61,7 @@
 				</select>
 			</div>
 
-			<button class="btn btn-primary float-right m-auto mb-5">Thêm khách hàng</button>
+			<button class="btn btn-primary float-right m-auto mb-5">Thêm tài khoản</button>
 		</div>
 	</div>
 </form>
